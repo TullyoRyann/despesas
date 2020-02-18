@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.desafio.despesa.exception.ContaBalanceBeingInsufficientException;
 import com.desafio.despesa.exception.ContaNotFoundException;
-import com.desafio.despesa.form.TransfereciaForm;
+import com.desafio.despesa.form.TransferenciaForm;
 import com.desafio.despesa.model.Conta;
 import com.desafio.despesa.model.Transferencia;
 import com.desafio.despesa.repository.TransferenciaRepository;
@@ -22,7 +22,7 @@ public class TransferenciaService {
 	@Autowired
 	private ContaService contaService;
 
-	public Transferencia addTransferencia(TransfereciaForm transfDTO) {
+	public Transferencia addTransferencia(TransferenciaForm transfDTO) {
 		Conta origem = contaService.get(transfDTO.getIdOrigem());
 		if (origem == null) {
 			throw new ContaNotFoundException("Conta de origem não existe, id: ", transfDTO.getIdOrigem());

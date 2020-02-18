@@ -7,8 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.desafio.despesa.model.Conta;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +23,5 @@ public class ContaForm {
 	private BigDecimal saldoInicial;
 
 	private BigDecimal saldo;
-
-	public Conta converter() {
-		return new Conta(nome, saldoInicial, saldo);
-	}
 
 }

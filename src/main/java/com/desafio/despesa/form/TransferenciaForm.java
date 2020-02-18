@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class TransfereciaForm {
+public class TransferenciaForm {
 
 	@NotNull
 	private Long idOrigem;

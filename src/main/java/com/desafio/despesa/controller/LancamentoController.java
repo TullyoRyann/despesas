@@ -1,6 +1,5 @@
 package com.desafio.despesa.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,8 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.desafio.despesa.dto.LancamentoDTO;
+import com.desafio.despesa.exception.ContaNotFoundException;
 import com.desafio.despesa.form.LancamentoForm;
+import com.desafio.despesa.infrastructure.service.ResponseService;
+import com.desafio.despesa.model.Conta;
 import com.desafio.despesa.model.Lancamento;
+import com.desafio.despesa.presentation.assembler.LancamentoAssembler;
+import com.desafio.despesa.presentation.dto.shared.ResponseTO;
+import com.desafio.despesa.service.ContaService;
 import com.desafio.despesa.service.LancamentoService;
 
 @RestController
@@ -27,23 +32,32 @@ public class LancamentoController {
 	@Autowired
 	private LancamentoService lancamentoService;
 
+	@Autowired
+	private ContaService contaService;
+
+	@Autowired
+	private ResponseService responseService;
+
 	@PostMapping
-	public ResponseEntity<LancamentoDTO> cadastrar(@RequestBody @Valid LancamentoForm form, UriComponentsBuilder uriBuilder) {
-		Lancamento lancamento = lancamentoService.cadastrar(form);
-		URI uri = uriBuilder.path("/lancamentos/{id}").buildAndExpand(lancamento.getId()).toUri();
-		return ResponseEntity.created(uri).body(new LancamentoDTO(lancamento));
+	public ResponseEntity<ResponseTO<LancamentoDTO>> cadastrar(@RequestBody @Valid LancamentoForm form, UriComponentsBuilder uriBuilder) {
+		Conta conta = contaService.get(form.getIdConta());
+		if (conta == null) {
+			throw new ContaNotFoundException(form.getIdConta());
+		}
+		Lancamento lancamento = LancamentoAssembler.from(form, conta);
+		lancamentoService.cadastrar(lancamento);
+		return responseService.create(LancamentoAssembler.from(lancamento), uriBuilder, lancamento.getId(), "/lancamentos/{id}");
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<LancamentoDTO> get(@PathVariable Long id) {
+	public ResponseEntity<ResponseTO<LancamentoDTO>> get(@PathVariable Long id) {
 		Lancamento lancamento = lancamentoService.get(id);
-		return lancamento != null ? ResponseEntity.ok(new LancamentoDTO(lancamento)) : ResponseEntity.notFound().build();
+		return lancamento != null ? responseService.ok(LancamentoAssembler.from(lancamento)) : responseService.notFound();
 	}
 
 	@GetMapping("/movimentacoes")
-	public List<LancamentoDTO> getMovimentacoes() {
-		List<Lancamento> movimentacoes = lancamentoService.getMovimentacoes();
-		return LancamentoDTO.converter(movimentacoes);
+	public ResponseEntity<ResponseTO<List<LancamentoDTO>>> getMovimentacoes() {
+		return responseService.ok(LancamentoAssembler.from(lancamentoService.getMovimentacoes()));
 	}
 
 }

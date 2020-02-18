@@ -7,10 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.desafio.despesa.exception.ContaNotFoundException;
-import com.desafio.despesa.model.Conta;
-import com.desafio.despesa.model.Lancamento;
-import com.desafio.despesa.service.ContaService;
 import com.desafio.despesa.type.TipoLancamento;
 
 import lombok.Getter;
@@ -31,13 +27,5 @@ public class LancamentoForm {
 
 	@NotNull
 	private Long idConta;
-
-	public Lancamento converter(ContaService contaService) {
-		Conta conta = contaService.get(idConta);
-		if (conta == null) {
-			throw new ContaNotFoundException(idConta);
-		}
-		return new Lancamento(descricao, valor, tipo, conta);
-	}
 
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.desafio.despesa.form.ContaForm;
 import com.desafio.despesa.model.Conta;
 import com.desafio.despesa.repository.ContaRepository;
 
@@ -16,9 +15,8 @@ public class ContaService {
 	@Autowired
 	private ContaRepository contaRepository;
 
-	public Conta cadastrar(ContaForm form) {
-		form.setSaldo(form.getSaldoInicial());
-		Conta conta = form.converter();
+	public Conta cadastrar(Conta conta) {
+		conta.setSaldo(conta.getSaldoInicial());
 		return salvar(conta);
 	}
 

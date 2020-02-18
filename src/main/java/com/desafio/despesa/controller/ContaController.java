@@ -1,7 +1,6 @@
 package com.desafio.despesa.controller;
 
 import java.math.BigDecimal;
-import java.net.URI;
 
 import javax.validation.Valid;
 
@@ -17,7 +16,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.desafio.despesa.dto.ContaDTO;
 import com.desafio.despesa.form.ContaForm;
+import com.desafio.despesa.infrastructure.service.ResponseService;
 import com.desafio.despesa.model.Conta;
+import com.desafio.despesa.presentation.assembler.ContaAssembler;
+import com.desafio.despesa.presentation.dto.shared.ResponseTO;
 import com.desafio.despesa.service.ContaService;
 
 @RestController
@@ -27,23 +29,25 @@ public class ContaController {
 	@Autowired
 	private ContaService contaService;
 
+	@Autowired
+	private ResponseService responseService;
+
 	@PostMapping
-	public ResponseEntity<ContaDTO> cadastrar(@RequestBody @Valid ContaForm form, UriComponentsBuilder uriBuilder) {
-		Conta conta = contaService.cadastrar(form);
-		URI uri = uriBuilder.path("/contas/{id}").buildAndExpand(conta.getId()).toUri();
-		return ResponseEntity.created(uri).body(new ContaDTO(conta));
+	public ResponseEntity<ResponseTO<ContaDTO>> cadastrar(@RequestBody @Valid ContaForm form, UriComponentsBuilder uriBuilder) {
+		Conta conta = ContaAssembler.from(form);
+		contaService.cadastrar(conta);
+		return responseService.create(ContaAssembler.from(conta), uriBuilder, conta.getId(), "/contas/{id}");
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ContaDTO> get(@PathVariable Long id) {
+	public ResponseEntity<ResponseTO<ContaDTO>> get(@PathVariable Long id) {
 		Conta conta = contaService.get(id);
-		return conta != null ? ResponseEntity.ok(new ContaDTO(conta)) : ResponseEntity.notFound().build();
+		return conta != null ? responseService.ok(ContaAssembler.from(conta)) : responseService.notFound();
 	}
 
 	@GetMapping("/saldoTotal")
-	public ResponseEntity<BigDecimal> getSaldoAtual() {
-		BigDecimal saldoTotal = contaService.getSaldoTotal();
-		return ResponseEntity.ok(saldoTotal);
+	public ResponseEntity<ResponseTO<BigDecimal>> getSaldoAtual() {
+		return responseService.ok(contaService.getSaldoTotal());
 	}
 
 }

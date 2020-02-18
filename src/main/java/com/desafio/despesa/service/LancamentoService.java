@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.desafio.despesa.form.LancamentoForm;
 import com.desafio.despesa.model.Lancamento;
 import com.desafio.despesa.repository.LancamentoRepository;
 import com.desafio.despesa.type.TipoLancamento;
@@ -20,8 +19,7 @@ public class LancamentoService {
 	@Autowired
 	private ContaService contaService;
 
-	public Lancamento cadastrar(LancamentoForm form) {
-		Lancamento lancamento = form.converter(contaService);
+	public Lancamento cadastrar(Lancamento lancamento) {
 		lancamentoRepository.save(lancamento);
 		creditarOuDebitarPeloTipo(lancamento);
 		return lancamento;

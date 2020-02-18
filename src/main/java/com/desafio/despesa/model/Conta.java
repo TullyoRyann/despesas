@@ -10,13 +10,10 @@ import javax.persistence.Id;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
 @Entity(name = "tb_conta")
 public class Conta {
@@ -26,17 +23,21 @@ public class Conta {
 	@Column(name = "id_conta")
 	private Long id;
 
-	@NonNull
 	@Column(name = "nm_conta")
 	private String nome;
 
-	@NonNull
 	@Column(name = "vl_saldo_inicial")
 	private BigDecimal saldoInicial;
 
-	@NonNull
 	@Column(name = "vl_saldo")
 	private BigDecimal saldo;
+
+	public Conta(String nome, BigDecimal saldoInicial, BigDecimal saldo) {
+		super();
+		this.nome = nome;
+		this.saldoInicial = saldoInicial;
+		this.saldo = saldo;
+	}
 
 	@Override
 	public int hashCode() {

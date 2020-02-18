@@ -7,10 +7,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ContaDTO {
+public class TransferenciaDTO {
 
-	private Long id;
-	private String nome;
-	private BigDecimal saldoInicial;
-	private BigDecimal saldo;
+	private String origem;
+	private String destino;
+	private BigDecimal valor;
+
 }
