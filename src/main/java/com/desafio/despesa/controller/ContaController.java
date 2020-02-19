@@ -1,6 +1,7 @@
 package com.desafio.despesa.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -48,6 +49,11 @@ public class ContaController {
 	@GetMapping("/saldoTotal")
 	public ResponseEntity<ResponseTO<BigDecimal>> getSaldoAtual() {
 		return responseService.ok(contaService.getSaldoTotal());
+	}
+
+	@GetMapping
+	public ResponseEntity<ResponseTO<List<ContaDTO>>> findAll() {
+		return responseService.ok(ContaAssembler.from(contaService.findAll()));
 	}
 
 }

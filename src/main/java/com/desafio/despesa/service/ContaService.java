@@ -1,6 +1,7 @@
 package com.desafio.despesa.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,10 @@ public class ContaService {
 
 	public Conta salvar(Conta conta) {
 		return contaRepository.save(conta);
+	}
+
+	public List<Conta> findAll() {
+		return contaRepository.findAll();
 	}
 
 	public void debitar(Conta conta, BigDecimal valor) {
