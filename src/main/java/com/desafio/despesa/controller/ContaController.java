@@ -51,7 +51,7 @@ public class ContaController {
 		return responseService.ok(contaService.getSaldoTotal());
 	}
 
-	@GetMapping
+	@GetMapping("/findAll")
 	public ResponseEntity<ResponseTO<List<ContaDTO>>> findAll() {
 		return responseService.ok(ContaAssembler.from(contaService.findAll()));
 	}
