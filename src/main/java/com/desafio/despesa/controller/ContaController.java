@@ -1,17 +1,21 @@
 package com.desafio.despesa.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -21,6 +25,7 @@ import com.desafio.despesa.infrastructure.service.ResponseService;
 import com.desafio.despesa.model.Conta;
 import com.desafio.despesa.presentation.assembler.ContaAssembler;
 import com.desafio.despesa.presentation.dto.shared.ResponseTO;
+import com.desafio.despesa.repository.ContaRepository;
 import com.desafio.despesa.service.ContaService;
 
 @RestController
@@ -51,9 +56,12 @@ public class ContaController {
 		return responseService.ok(contaService.getSaldoTotal());
 	}
 
+	@Autowired
+	ContaRepository contaRepository;
+
 	@GetMapping("/findAll")
-	public ResponseEntity<ResponseTO<List<ContaDTO>>> findAll() {
-		return responseService.ok(ContaAssembler.from(contaService.findAll()));
+	public ResponseEntity<ResponseTO<Page<ContaDTO>>> findAll(@RequestParam(required = false) String nome, @PageableDefault(direction = Direction.ASC) Pageable pageable) {
+		return responseService.ok(ContaAssembler.from(contaService.findAll(nome, pageable)));
 	}
 
 }

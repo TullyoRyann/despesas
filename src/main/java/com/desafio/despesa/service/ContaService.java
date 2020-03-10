@@ -1,10 +1,11 @@
 package com.desafio.despesa.service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.desafio.despesa.model.Conta;
@@ -30,8 +31,15 @@ public class ContaService {
 		return contaRepository.save(conta);
 	}
 
-	public List<Conta> findAll() {
-		return contaRepository.findAll();
+	public Page<Conta> findAll(String nome, Pageable pageable) {
+		Page<Conta> result = null;
+		if (nome != null && !nome.isEmpty()) {
+			result = contaRepository.findByNomeIgnoreCaseContaining(nome, pageable);
+		} else {
+			result = contaRepository.findAll(pageable);
+		}
+
+		return result;
 	}
 
 	public void debitar(Conta conta, BigDecimal valor) {
